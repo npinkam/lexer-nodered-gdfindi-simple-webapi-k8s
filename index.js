@@ -8,8 +8,9 @@ const nocache = require('nocache')
 const path = require('path');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const cookieParser = require('cookie-parser');
+const embeddedStart = require('node-red-embedded-start');
 const sleep = require('util').promisify(setTimeout)
-var embeddedStart = require('node-red-embedded-start');
+// inject node-red with a delay after run start
 embeddedStart.inject(RED);
 
 const config = {
@@ -22,6 +23,16 @@ const config = {
 };
 const { ClientCredentials, ResourceOwnerPassword, AuthorizationCode } = require('simple-oauth2');
 
+// Create the settings object - see default settings.js file for other options
+var settings = {
+    httpAdminRoot: "/red",
+    httpNodeRoot: "/api",
+    userDir: '',
+    functionGlobalContext: {
+        authorization: ''
+    }    // enables global context
+};
+
 // Create an Express app
 var app = express();
 
@@ -31,16 +42,6 @@ app.use("/", express.static("public"));
 // Create a server
 var server = http.createServer(app);
 
-// Create the settings object - see default settings.js file for other options
-var settings = {
-    httpAdminRoot: "/red",
-    httpNodeRoot: "/api",
-    userDir: `./userDir/${username}`,
-    functionGlobalContext: {
-        authorization: ''
-    }    // enables global context
-};
-
 //parser
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -49,7 +50,7 @@ app.use(nocache());
 
 //cookie
 app.use(cookieParser());
-
+/*
 // Initialise the runtime with a server and settings
 RED.init(server, settings);
 
@@ -58,14 +59,13 @@ app.use(settings.httpAdminRoot, RED.httpAdmin);
 
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot, RED.httpNode);
+*/
 
-server.listen(8000);
-
-var checkAuth = function(req){
-    //if(req.cookies.hasOwnProperty('authorization')){
-    if(settings.functionGlobalContext.authorization != false){
+var checkAuth = function (req) {
+    if (req.cookies.hasOwnProperty('authorization')) {
+        //if (settings.functionGlobalContext.authorization != false) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -91,10 +91,47 @@ app.post('/auth', (req, res) => {
         try {
             const accessToken = await client.getToken(tokenParams, { json: true });
             var authorization = accessToken.token.token_type + ' ' + accessToken.token.access_token;
-            settings.functionGlobalContext.authorization = authorization;
 
             //stop node-red module
+            await RED.stop();
+            //delete node-red route from app
+            var routes = app._router.stack;
+            routes.forEach(function (route, index) {
+                if (route.path === '/red') {
+                    // remove the mounted app
+                    routes.splice(index, 1);
+                }
+            });
+            //delete an instance of node-red server and create a new one
+            server.close();
+            server = null;
+            server = http.createServer(app);
 
+            // Create the settings object - see default settings.js file for other options
+            settings = {
+                httpAdminRoot: "/red",
+                httpNodeRoot: "/api",
+                userDir: `./userDir/${username}`,
+                functionGlobalContext: {
+                    authorization: authorization
+                }    // enables global context
+            };
+
+            // Initialise the runtime with a server and settings
+            RED.init(server, settings);
+
+            // Serve the editor UI from /red
+            app.use(settings.httpAdminRoot, RED.httpAdmin);
+
+            // Serve the http nodes UI from /api
+            app.use(settings.httpNodeRoot, RED.httpNode);
+
+            // Start the runtime
+            await RED.start()
+
+            //reinitialize server
+            server.listen(8000);
+            await sleep(500);
 
             res.cookie('username', username);
             res.cookie('authorization', authorization);
@@ -102,9 +139,7 @@ app.post('/auth', (req, res) => {
         } catch (error) {
             console.log('Access Token Error', error.message);
         }
-
     }
-
     run();
 });
 
@@ -249,25 +284,9 @@ app.get('/pvdolist', (req, res) => {
         res.send(utility.htmlTemplate('', '', `p {margin-left: auto;margin-right: auto;width: 8em;font-size: xx-large}`, '', `<p>No Authorization</p>`, ''))
     }
 });
-/*
-app.get('/api/*', (req, res) => {
-    //check authorization in settings.functionGlobalContext.authorization
-    if (checkAuth(req)) {
-        var title = `LEXER: GD.findi Node-RED`
-        var library = ``;
-        var header = ``;
-        var style = ``;
-        var body = `<div><iframe src="http://127.0.0.1:1880${req.url}" style="position: absolute; height: 94%; width:100%; border: none"></iframe></div>`;
-        var script = ``;
-        var html = utility.htmlTemplate(title, library, style, header, body, script);
-        res.send(html)
-    } else {
-        res.send(utility.htmlTemplate('', '', `p {margin-left: auto;margin-right: auto;width: 8em;font-size: xx-large}`, '', `<p>No Authorization</p>`, ''))
-    }
-});
-*/
+
 app.get('/logout', (req, res) => {
-    if(settings.functionGlobalContext.hasOwnProperty('authorization')){
+    if (settings.functionGlobalContext.hasOwnProperty('authorization')) {
         settings.functionGlobalContext.authorization = '';
     }
     res.clearCookie('authorization');
@@ -275,5 +294,4 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-// Start the runtime
-RED.start();
+server.listen(8000);
