@@ -1,0 +1,21 @@
+{
+  "name": "lexer-nodered-gdfindi-simple-webapi-k8s",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "nocache": "^2.1.0",
+    "node-red": "^1.2.6",
+    "simple-oauth2": "^4.2.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
