@@ -8,6 +8,9 @@ const nocache = require('nocache')
 const path = require('path');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const cookieParser = require('cookie-parser');
+const sleep = require('util').promisify(setTimeout)
+var embeddedStart = require('node-red-embedded-start');
+embeddedStart.inject(RED);
 
 const config = {
     client: {
@@ -32,7 +35,7 @@ var server = http.createServer(app);
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
-    userDir: "/home/nol/.nodered/user1",
+    userDir: `./userDir/${username}`,
     functionGlobalContext: {
         authorization: ''
     }    // enables global context
@@ -89,7 +92,11 @@ app.post('/auth', (req, res) => {
             const accessToken = await client.getToken(tokenParams, { json: true });
             var authorization = accessToken.token.token_type + ' ' + accessToken.token.access_token;
             settings.functionGlobalContext.authorization = authorization;
-            //res.cookie('username', username);
+
+            //stop node-red module
+
+
+            res.cookie('username', username);
             res.cookie('authorization', authorization);
             res.redirect('/lexerproject');
         } catch (error) {
