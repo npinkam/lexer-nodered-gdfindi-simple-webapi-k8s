@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "nocache": "^2.1.0",
     "node-red": "^1.2.6",
+    "node-red-embedded-start": "^1.0.1",
     "simple-oauth2": "^4.2.0",
     "xmlhttprequest": "^1.8.0"
   }
