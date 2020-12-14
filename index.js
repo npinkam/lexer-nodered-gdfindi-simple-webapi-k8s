@@ -287,8 +287,32 @@ app.get('/pvdolist', (req, res) => {
 
 app.get('/logout', (req, res) => {
     if (settings.functionGlobalContext.hasOwnProperty('authorization')) {
-        settings.functionGlobalContext.authorization = '';
+        settings = {
+            httpAdminRoot: "/red",
+            httpNodeRoot: "/api",
+            userDir: '',
+            functionGlobalContext: {
+                authorization: ''
+            }
+        };
     }
+    //stop node-red module
+    RED.stop().then(() => {
+        //delete node-red route from app
+        var routes = app._router.stack;
+        routes.forEach(function (route, index) {
+            if (route.path === '/red') {
+                // remove the mounted app
+                routes.splice(index, 1);
+            }
+        });
+        //delete an instance of node-red server and create a new one
+        server.close();
+        server = null;
+        server = http.createServer(app);
+        server.listen(8000);
+    })
+
     res.clearCookie('authorization');
     res.clearCookie('username');
     res.redirect('/');
