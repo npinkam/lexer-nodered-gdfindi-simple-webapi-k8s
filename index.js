@@ -8,10 +8,8 @@ const nocache = require('nocache')
 const path = require('path');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const cookieParser = require('cookie-parser');
-const embeddedStart = require('node-red-embedded-start');
 const sleep = require('util').promisify(setTimeout)
 // inject node-red with a delay after run start
-embeddedStart.inject(RED);
 
 const config = {
     client: {
