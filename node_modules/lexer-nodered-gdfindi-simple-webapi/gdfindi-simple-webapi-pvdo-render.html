@@ -1,0 +1,77 @@
+<script type="text/javascript">
+    RED.nodes.registerType('PVDO: Render',{
+        category: 'lexer-function',
+        color: '#a6bbcf',
+        defaults: {
+},
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return "PVDO Render";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="PVDO: Render">
+</script>
+
+<script type="text/html" data-help-name="PVDO: Render">
+    <p>Request project execution on PVDO.</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>payload
+                <span class="property-type">JSON</span>
+            </dt>
+            <dd><code>{<br/>
+                "id": <i>string | number</i>, <br/>
+                "pvdoRenderingCondition": {<br/>
+                    &nbsp;"iniplans": <br/>
+                    &nbsp;[<br/>
+                    &nbsp;&nbsp;{<br/>
+                        &nbsp;&nbsp;&nbsp;"productid": <i>string</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"lotsize": <i>number</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"daytime": <i>nullable int</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"islot": <i>boolean</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"line": <i>nullable int</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"processid": <i>nullable int</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"stationid": <i>nullable int</i>,<br/>
+                        &nbsp;&nbsp;&nbsp;"deliveryTime": <i>nullable int</i><br/>
+                        &nbsp;&nbsp;}, ...<br/>
+                        &nbsp;],<br/>
+                        &nbsp;"goals": <i>nullable int</i>,<br/>
+                        &nbsp;"patternCondition": {<br/>
+                            &nbsp;&nbsp;"RenderingType": <i>number</i>,<br/>
+                            &nbsp;&nbsp;"Patterns": [<br/>
+                            &nbsp;&nbsp;&nbsp;<i>array</i><br/>
+                            &nbsp;&nbsp;]<br/>
+                            &nbsp;},<br/>
+                            &nbsp;"start": <i>nullable int</i>,<br/>
+                            &nbsp;"mode": <i>string</i><br/>
+                            &nbsp;}<br/>
+              }<br/>
+            </code> require <<b>Project ID</b>> as <code>id</code> and <code>pvdoRenderingCondition</code> JSON as inputs.
+            </dd>
+        </dl>
+
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">string</span></dt>
+                    <dd> the output is the <<b>Mining ID</b>> of the submitted task. </dd>
+                </dl>
+            </li>
+            <li>Standard error
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">string</span></dt>
+                    <dd>the standard error of the command.</dd>
+                </dl>
+            </li>
+        </ol>
+    <!--
+    <h3>Details</h3>
+        <p></p>
+    -->
+</script>

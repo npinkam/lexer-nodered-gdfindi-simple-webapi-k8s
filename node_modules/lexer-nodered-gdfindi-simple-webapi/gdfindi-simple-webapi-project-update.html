@@ -1,0 +1,64 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Project: Update',{
+        category: 'lexer-function',
+        color: '#a6bbcf',
+        defaults: {
+},
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return "Project Update";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Project: Update">
+</script>
+
+<script type="text/html" data-help-name="Project: Update">
+    <p>Update the project using a JSON.</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>payload
+                <span class="property-type">JSON</span>
+            </dt>
+            <dd>  <code>{<br/>
+                <b>"id": <i>string | number</i>, *required</b><br/>
+                "name": <i>string</i>,<br/>
+                "desc": <i>string</i>,<br/>
+                "extended": <i>JSON</i>,<br/>
+                "productionProcesses": <i>JSON</i>,<br/>
+                "layouts": <i>JSON</i>,<br/>
+                "stationActivities": <i>JSON</i>,<br/>
+                "transportationActivities": <i>JSON</i>,<br/>
+                "masters": <i>JSON</i>,<br/>
+                "assets": <i>JSON</i>,<br/>
+                "renderingCondition": <i>JSON</i>,<br/>
+                "latitude": <i>number</i>,<br/>
+                "longitude": <i>number</i><br/>
+              }<br/>
+            </code> require <<b>project ID</b>> as <code>id</code> in the JSON.</dd>
+        </dl>
+    
+     <h3>Outputs</h3>
+         <ol class="node-ports">
+             <li>Standard output
+                 <dl class="message-properties">
+                     <dt>payload <span class="property-type">JSON</span></dt>
+                     <dd> the detail of the updated project in JSON format. </dd>
+                 </dl>
+             </li>
+             <li>Standard error
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">string</span></dt>
+                    <dd>the standard error of the command.</dd>
+                </dl>
+            </li>
+         </ol>
+    <!--
+    <h3>Details</h3>
+        <p></p>
+    -->
+</script>

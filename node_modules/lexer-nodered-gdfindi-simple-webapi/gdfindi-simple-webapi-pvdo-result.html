@@ -1,0 +1,49 @@
+<script type="text/javascript">
+    RED.nodes.registerType('PVDO: Result',{
+        category: 'lexer-function',
+        color: '#a6bbcf',
+        defaults: {
+},
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return "PVDO Result";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="PVDO: Result">
+</script>
+
+<script type="text/html" data-help-name="PVDO: Result">
+    <p>The result of the PVDO execution.</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>payload
+                <span class="property-type">string | number</span>
+            </dt>
+            <dd> <<b>Mining ID</b>> of the task. </dd>
+        </dl>
+
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">JSON</span></dt>
+                    <dd>the output is the PVDO result in JSON format. </dd>
+                </dl>
+            </li>
+            <li>Standard error
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">string</span></dt>
+                    <dd>the standard error of the command.</dd>
+                </dl>
+            </li>
+        </ol>
+    <!--
+    <h3>Details</h3>
+        <p></p>
+    -->
+</script>

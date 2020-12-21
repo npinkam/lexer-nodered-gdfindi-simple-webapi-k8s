@@ -1,0 +1,49 @@
+<script type="text/javascript">
+    RED.nodes.registerType('PVDO: List',{
+        category: 'lexer-function',
+        color: '#a6bbcf',
+        defaults: {
+},
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return "PVDO List";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="PVDO: List">
+</script>
+
+<script type="text/html" data-help-name="PVDO: List">
+    <p>Output a list of PVDO requests on GD.findi server.</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>payload
+                <span class="property-type">any</span>
+            </dt>
+            <dd> Any <code>payload</code> input.   </dd>
+        </dl>
+
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">JSON</span></dt>
+                    <dd>the output is a list of PVDO requests on GD.findi server in JSON format. </dd>
+                </dl>
+            </li>
+            <li>Standard error
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">string</span></dt>
+                    <dd>the standard error of the command.</dd>
+                </dl>
+            </li>
+        </ol>
+    <!--
+    <h3>Details</h3>
+        <p></p>
+    -->
+</script>
