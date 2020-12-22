@@ -23,6 +23,7 @@ const { ClientCredentials, ResourceOwnerPassword, AuthorizationCode } = require(
 
 // Create the settings object - see default settings.js file for other options
 var settings = {
+    flowFile: ``,
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
     userDir: '',
@@ -107,6 +108,7 @@ app.post('/auth', (req, res) => {
 
             // Create the settings object - see default settings.js file for other options
             settings = {
+                flowFile: `flow_${username}.json`,
                 httpAdminRoot: "/red",
                 httpNodeRoot: "/api",
                 userDir: `./userDir/${username}`,
