@@ -179,12 +179,12 @@ app.get('/projectlist', (req, res) => {
         var style = '';
         var header = ``;
 
-        response.forEach(element => {
+/*         response.forEach(element => {
             var buffer = element.id;
             var link = `/projinfo?projectId=${buffer}`;
             element.id = "<a href=" + link + " target='_self'>" + buffer + "</a>";
 
-        });
+        }); */
 
         var body = `
 <div class="container">
@@ -225,12 +225,12 @@ app.get('/pvdolist', (req, res) => {
         xhr.send();
         var response = JSON.parse(xhr.responseText);
 
-        //current mining
+/*         //current mining
         var buffer = response.miningmanager_status.CurrentMiningID;
         var link = `/PVDOinfo?MiningID=${buffer}`;
         response.miningmanager_status.CurrentMiningID = "<a href=" + link + " target='_self'>" + buffer + "</a>";
-
-        response.mining_statuses.forEach(element => {
+ */
+/*         response.mining_statuses.forEach(element => {
             var buffer = element.MiningID;
             var link = `/PVDOinfo?MiningID=${buffer}`;
             element.MiningID = "<a href=" + link + " target='_self'>" + buffer + "</a>";
@@ -240,7 +240,7 @@ app.get('/pvdolist', (req, res) => {
                 link = `/PVDOabort?MiningID=${buffer}`;
                 element.Status = `<p>${bufferStatus} (</p><a href=${link} target='_self'>ABORT</a><p>)</p>`;
             }
-        });
+        }); */
 
         var title = 'GD.findi PVDO List'
         var library = `
