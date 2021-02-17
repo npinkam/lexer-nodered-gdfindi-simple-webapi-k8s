@@ -34,6 +34,11 @@ var settings = {
         origin: "*",
         methods: "GET,PUT,POST,DELETE"
     },
+    editorTheme: {
+        projects: {
+            enabled: true // Enable the projects feature
+        }
+    },
 };
 
 // Create an Express app
@@ -122,6 +127,11 @@ app.post('/auth', (req, res) => {
                 httpNodeCors: {
                     origin: "*",
                     methods: "GET,PUT,POST,DELETE"
+                },
+                editorTheme: {
+                    projects: {
+                        enabled: true // Enable the projects feature
+                    }
                 },
             };
 
@@ -301,7 +311,16 @@ app.get('/logout', (req, res) => {
             userDir: '',
             functionGlobalContext: {
                 authorization: ''
-            }
+            },
+            httpNodeCors: {
+                origin: "*",
+                methods: "GET,PUT,POST,DELETE"
+            },
+            editorTheme: {
+                projects: {
+                    enabled: true // Enable the projects feature
+                }
+            },
         };
     }
     //stop node-red module
