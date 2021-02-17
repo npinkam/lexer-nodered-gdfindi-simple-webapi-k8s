@@ -115,7 +115,7 @@ app.post('/auth', (req, res) => {
                 flowFile: `flow_${username}.json`,
                 httpAdminRoot: "/red",
                 httpNodeRoot: "/api",
-                userDir: `./userDir/${username}`,
+                userDir: `/app/userDir/${username}`,
                 functionGlobalContext: {
                     authorization: authorization
                 },    // enables global context
