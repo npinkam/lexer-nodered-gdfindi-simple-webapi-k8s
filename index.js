@@ -9,6 +9,7 @@ const path = require('path');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const cookieParser = require('cookie-parser');
 const sleep = require('util').promisify(setTimeout)
+const os = require('os');
 // inject node-red with a delay after run start
 
 const config = {
@@ -36,7 +37,7 @@ var settings = {
     },
     editorTheme: {
         projects: {
-            enabled: true // Enable the projects feature
+            enabled: false // Enable the projects feature
         }
     },
 };
@@ -130,7 +131,7 @@ app.post('/auth', (req, res) => {
                 },
                 editorTheme: {
                     projects: {
-                        enabled: true // Enable the projects feature
+                        enabled: false // Enable the projects feature
                     }
                 },
             };
@@ -166,7 +167,7 @@ app.get('/lexerproject', (req, res) => {
     if (checkAuth(req)) {
         var title = `LEXER: GD.findi Node-RED`
         var library = ``;
-        var header = ``;
+        var header = `<a href="#">${os.hostname()}</a>`;
         var style = ``;
         var body = `<div><iframe src="/red" style="position: absolute; height: 94%; width:100%; border: none"></iframe></div>`;
         var script = ``;
@@ -318,7 +319,7 @@ app.get('/logout', (req, res) => {
             },
             editorTheme: {
                 projects: {
-                    enabled: true // Enable the projects feature
+                    enabled: false // Enable the projects feature
                 }
             },
         };
