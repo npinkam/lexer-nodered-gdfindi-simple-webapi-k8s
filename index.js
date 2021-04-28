@@ -1,16 +1,19 @@
 const http = require('http');
 const express = require("express");
 const RED = require("node-red");
+const { Server } = require("socket.io");
 const utility = require('./lib/utility.js');
 const bodyParser = require('body-parser');
-const { auth } = require('@node-red/editor-api');
 const nocache = require('nocache')
 const path = require('path');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const cookieParser = require('cookie-parser');
 const sleep = require('util').promisify(setTimeout)
 const os = require('os');
-// inject node-red with a delay after run start
+
+if (occupied == undefined) {
+    var occupied = false
+}
 
 const config = {
     client: {
@@ -59,6 +62,17 @@ app.use(nocache());
 
 //cookie
 app.use(cookieParser());
+
+//use socket.io
+const io = new Server(server,{'pingInterval': 60000, pingTimeout: 5000});
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+        occupied = false
+    });
+});
+
 /*
 // Initialise the runtime with a server and settings
 RED.init(server, settings);
@@ -84,7 +98,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname + '/html/login.html'));
+    if (occupied == false) {
+        res.sendFile(path.join(__dirname + '/html/login.html'))
+    } else {
+        res.clearCookie('INGRESSCOOKIE')
+        res.redirect('/')
+    }
 });
 
 app.post('/auth', (req, res) => {
@@ -159,7 +178,13 @@ app.post('/auth', (req, res) => {
             console.log('Access Token Error', error.message);
         }
     }
-    run();
+    if (occupied == false) {
+        occupied = true
+        run();
+    } else {
+        res.clearCookie('INGRESSCOOKIE')
+        res.redirect('/')
+    }
 });
 
 app.get('/lexerproject', (req, res) => {
@@ -167,7 +192,7 @@ app.get('/lexerproject', (req, res) => {
     if (checkAuth(req)) {
         var title = `LEXER: GD.findi Node-RED`
         var library = ``;
-        var header = `<a href="#">${os.hostname()}</a>`;
+        var header = `<a href="#">${os.hostname()}:${occupied}</a>`;
         var style = ``;
         var body = `<div><iframe src="/red" style="position: absolute; height: 94%; width:100%; border: none"></iframe></div>`;
         var script = ``;
@@ -343,6 +368,8 @@ app.get('/logout', (req, res) => {
 
     res.clearCookie('authorization');
     res.clearCookie('username');
+    res.clearCookie('INGRESSCOOKIE')
+    occupied = false
     res.redirect('/');
 });
 
