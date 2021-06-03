@@ -11,6 +11,8 @@ const cookieParser = require('cookie-parser');
 const sleep = require('util').promisify(setTimeout)
 const os = require('os');
 
+var registry = require('@node-red/registry');
+
 if (occupied == undefined) {
     var occupied = false
 }
@@ -64,7 +66,7 @@ app.use(nocache());
 app.use(cookieParser());
 
 //use socket.io
-const io = new Server(server,{'pingInterval': 60000, pingTimeout: 5000});
+const io = new Server(server, { 'pingInterval': 60000, pingTimeout: 5000 });
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect', () => {
@@ -122,18 +124,6 @@ app.post('/auth', (req, res) => {
 
             //stop node-red module
             await RED.stop();
-            //delete node-red route from app
-            var routes = app._router.stack;
-            routes.forEach(function (route, index) {
-                if (route.path === '/red') {
-                    // remove the mounted app
-                    routes.splice(index, 1);
-                }
-            });
-            //delete an instance of node-red server and create a new one
-            server.close();
-            server = null;
-            server = http.createServer(app);
 
             // Create the settings object - see default settings.js file for other options
             settings = {
@@ -154,6 +144,30 @@ app.post('/auth', (req, res) => {
                     }
                 },
             };
+
+            //delete node-red route from app
+            var routes = app._router.stack;
+            var indexes = []
+            routes.forEach(function (route, index) {
+                if (route.regexp.source.match(new RegExp(`${settings.httpAdminRoot}|${settings.httpNodeRoot}`, "g")) != null) {
+                    // remove the mounted app
+                    indexes.push(index)
+                }
+            });
+            routes = routes.filter((value, index) => {
+                return indexes.indexOf(index) == -1;
+            })
+            app._router.stack = routes
+            //console.log(routes)
+            //remove previous modules from the registry
+            var moduleList = registry.getModuleList()
+            Object.keys(moduleList).forEach(async function (key) {
+                await registry.removeModule(key)
+            });
+            //delete an instance of node-red server and create a new one
+            server.close();
+            server = null;
+            server = http.createServer(app);
 
             // Initialise the runtime with a server and settings
             RED.init(server, settings);
